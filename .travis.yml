@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t al3000/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run al3000/react-test yarn test --coverage
+
+after_success:
+  - docker build -t al3000/multi-client ./client
+  - docker build -t al3000/multi-nginx ./nginx
+  - docker build -t al3000/multi-server ./server
+  - docker build -t al3000/multi-worker ./worker
+  # login
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # now push to docker hub
+  - docker push al3000/multi-client
+  - docker push al3000/multi-nginx
+  - docker push al3000/multi-server
+  - docker push al3000/multi-worker
