@@ -20,3 +20,16 @@ after_success:
   - docker push al3000/multi-nginx
   - docker push al3000/multi-server
   - docker push al3000/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "eu-central-1"
+  app: "multi-docker"
+  env: "MultiDocker-env"
+  bucket_name: elasticbeanstalk-eu-central-1-020559754201
+  bucket_path: "multi-docker"
+  on:
+    branch: master
+  access_key_id: $ACCESS_KEY_ID
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
